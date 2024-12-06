@@ -3,6 +3,8 @@ package cli
 import (
 	"fmt"
 	"os"
+
+	"github.com/codingchem/pokedexcli/internal/api"
 )
 
 type cliCommand struct {
@@ -25,7 +27,13 @@ func commandExit() error {
 }
 
 func mapCommand() error {
-	// TODO: implement this
+	curLocation, err := locations.NextLocations()
+	if err != nil {
+		return err
+	}
+	for _, loc := range curLocation {
+		fmt.Printf("%v\n", loc.Name)
+	}
 	return nil
 }
 
@@ -59,4 +67,7 @@ func initCommands() {
 	}
 }
 
-var CommandMap map[string]cliCommand
+var (
+	CommandMap map[string]cliCommand
+	locations  api.Map
+)
