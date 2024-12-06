@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -11,7 +12,10 @@ type cliCommand struct {
 }
 
 func commandHelp() error {
-	// TODO: Implement
+	fmt.Println("Welcome to the pokedex\n\nUsage:")
+	for _, cmd := range CommandMap {
+		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
+	}
 	return nil
 }
 
