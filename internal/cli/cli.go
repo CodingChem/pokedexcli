@@ -18,6 +18,8 @@ func Run() {
 			return
 		}
 		command := scanner.Text()
-		CommandMap[command].callback()
+		if err := CommandMap[command].callback(); err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 }
