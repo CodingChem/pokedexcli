@@ -24,6 +24,16 @@ func commandExit() error {
 	return nil
 }
 
+func mapCommand() error {
+	// TODO: implement this
+	return nil
+}
+
+func mapbCommand() error {
+	// TODO: implement this
+	return nil
+}
+
 func initCommands() {
 	CommandMap = map[string]cliCommand{
 		"help": {
@@ -35,6 +45,16 @@ func initCommands() {
 			name:        "exit",
 			description: "Exit the Pokedex",
 			callback:    commandExit,
+		},
+		"map": {
+			name:        "map",
+			description: "Displays the location areas of the pokemon world, invoke again to paginate.",
+			callback:    mapCommand,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Previous locations",
+			callback:    mapbCommand,
 		},
 	}
 }
