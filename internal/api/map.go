@@ -60,7 +60,6 @@ func (m *Map) callApi(url string) (ApiResponse, error) {
 	var resData ApiResponse
 	dec.Decode(&resData)
 	m.Next = resData.Next
-	// BUG: I have no idea if this is the proper check?
 	if resData.Previous == nil {
 		m.Previous = ""
 	} else {
