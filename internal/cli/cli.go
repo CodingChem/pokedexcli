@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"bufio"
@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func main() {
+func Run() {
 	initCommands()
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -18,6 +18,8 @@ func main() {
 			return
 		}
 		command := scanner.Text()
-		CommandMap[command].callback()
+		if err := CommandMap[command].callback(); err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 }
