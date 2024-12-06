@@ -38,7 +38,13 @@ func mapCommand() error {
 }
 
 func mapbCommand() error {
-	// TODO: implement this
+	curLocation, err := locations.PreviousLocations()
+	if err != nil {
+		return err
+	}
+	for _, loc := range curLocation {
+		fmt.Printf("%v\n", loc.Name)
+	}
 	return nil
 }
 
