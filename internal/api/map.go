@@ -28,13 +28,32 @@ func (m *Map) NextLocations() ([]LocationArea, error) {
 	if m.Next == "" {
 		m.Next = locationUrl
 	}
-	res, err := http.Get(m.Next)
+	resData, err := m.callApi(m.Next)
 	if err != nil {
 		return nil, err
 	}
+	return resData.Results, nil
+}
+
+func (m *Map) PreviousLocations() ([]LocationArea, error) {
+	if m.Previous == "" {
+		return nil, fmt.Errorf("Navigation error: On first page!")
+	}
+	resData, err := m.callApi(m.Previous)
+	if err != nil {
+		return nil, err
+	}
+	return resData.Results, nil
+}
+
+func (m *Map) callApi(url string) (ApiResponse, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return ApiResponse{}, err
+	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Invalid error code: %d", res.StatusCode)
+		return ApiResponse{}, fmt.Errorf("Invalid error code: %d", res.StatusCode)
 	}
 
 	dec := json.NewDecoder(res.Body)
@@ -47,5 +66,5 @@ func (m *Map) NextLocations() ([]LocationArea, error) {
 	} else {
 		m.Previous = *(resData.Previous)
 	}
-	return resData.Results, nil
+	return resData, nil
 }
