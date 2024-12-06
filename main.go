@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	initCommands()
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Printf("pokedex->")
