@@ -22,7 +22,7 @@ func (c *Cache[T]) Add(key string, value T) {
 }
 
 func NewCache[T any](retainSeconds int) *Cache[T] {
-	c := Cache[T]{}
+	c := Cache[T]{Calls: make(map[string]cacheEntry[T])}
 	go c.sweepLoop(retainSeconds)
 	return &c
 }
