@@ -9,13 +9,9 @@ import (
 const locationUrl string = "https://pokeapi.co/api/v2/location/"
 
 type ApiResponse struct {
-	Previous *string        `json:"previous"`
-	Next     string         `json:"next"`
-	Results  []LocationArea `json:"results"`
-}
-type LocationArea struct {
-	Name string `json:"name"`
-	Id   int    `json:"id"`
+	Previous *string         `json:"previous"`
+	Next     string          `json:"next"`
+	Results  json.RawMessage `json:"results"`
 }
 
 type Map struct {
@@ -23,26 +19,26 @@ type Map struct {
 	previous string
 }
 
-func (m *Map) NextLocations() ([]LocationArea, error) {
+func (m *Map) NextLocations() (ApiResponse, error) {
 	if m.next == "" {
 		m.next = locationUrl
 	}
 	resData, err := m.callApi(m.next)
 	if err != nil {
-		return nil, err
+		return ApiResponse{}, err
 	}
-	return resData.Results, nil
+	return resData, nil
 }
 
-func (m *Map) PreviousLocations() ([]LocationArea, error) {
+func (m *Map) PreviousLocations() (ApiResponse, error) {
 	if m.previous == "" {
-		return nil, fmt.Errorf("Navigation error: On first page!")
+		return ApiResponse{}, fmt.Errorf("Navigation error: On first page!")
 	}
 	resData, err := m.callApi(m.previous)
 	if err != nil {
-		return nil, err
+		return ApiResponse{}, err
 	}
-	return resData.Results, nil
+	return resData, nil
 }
 
 func (m *Map) callApi(url string) (ApiResponse, error) {
