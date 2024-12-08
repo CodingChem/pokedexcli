@@ -19,15 +19,15 @@ type LocationArea struct {
 }
 
 type Map struct {
-	Next     string
-	Previous string
+	next     string
+	previous string
 }
 
 func (m *Map) NextLocations() ([]LocationArea, error) {
-	if m.Next == "" {
-		m.Next = locationUrl
+	if m.next == "" {
+		m.next = locationUrl
 	}
-	resData, err := m.callApi(m.Next)
+	resData, err := m.callApi(m.next)
 	if err != nil {
 		return nil, err
 	}
@@ -35,10 +35,10 @@ func (m *Map) NextLocations() ([]LocationArea, error) {
 }
 
 func (m *Map) PreviousLocations() ([]LocationArea, error) {
-	if m.Previous == "" {
+	if m.previous == "" {
 		return nil, fmt.Errorf("Navigation error: On first page!")
 	}
-	resData, err := m.callApi(m.Previous)
+	resData, err := m.callApi(m.previous)
 	if err != nil {
 		return nil, err
 	}
@@ -58,11 +58,11 @@ func (m *Map) callApi(url string) (ApiResponse, error) {
 	dec := json.NewDecoder(res.Body)
 	var resData ApiResponse
 	dec.Decode(&resData)
-	m.Next = resData.Next
+	m.next = resData.Next
 	if resData.Previous == nil {
-		m.Previous = ""
+		m.previous = ""
 	} else {
-		m.Previous = *(resData.Previous)
+		m.previous = *(resData.Previous)
 	}
 	return resData, nil
 }
