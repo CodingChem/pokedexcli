@@ -20,17 +20,15 @@ type LocationArea struct {
 
 type LocationStore struct {
 	prev  *string
-	cache *pokecache.Cache[api.ApiResponse]
+	cache *pokecache.Cache[[]byte]
 	next  string
 }
 
 func (l *LocationStore) Next() ([]LocationArea, error) {
-	res, err := api.NextLocations(l.next)
+	res, err := l.getData(l.next)
 	if err != nil {
 		return nil, err
 	}
-	l.next = res.Next
-	l.prev = res.Previous
 	var locs []LocationArea
 	err = json.Unmarshal(res.Results, &locs)
 	if err != nil {
@@ -43,12 +41,10 @@ func (l *LocationStore) Prev() ([]LocationArea, error) {
 	if l.prev == nil {
 		return nil, fmt.Errorf("Already on first page!")
 	}
-	res, err := api.NextLocations(*l.prev)
+	res, err := l.getData(*l.prev)
 	if err != nil {
 		return nil, err
 	}
-	l.next = res.Next
-	l.prev = res.Previous
 	var locs []LocationArea
 	err = json.Unmarshal(res.Results, &locs)
 	if err != nil {
@@ -61,6 +57,21 @@ func NewLocationStore() *LocationStore {
 	return &LocationStore{
 		next:  "",
 		prev:  nil,
-		cache: pokecache.NewCache[api.ApiResponse](10),
+		cache: pokecache.NewCache[[]byte](10),
 	}
+}
+
+func (l *LocationStore) getData(url string) (api.ApiResponse, error) {
+	data, err := api.GetLocations(url)
+	if err != nil {
+		return api.ApiResponse{}, err
+	}
+	var res api.ApiResponse
+	err = json.Unmarshal(data, &res)
+	if err != nil {
+		return api.ApiResponse{}, err
+	}
+	l.next = res.Next
+	l.prev = res.Previous
+	return res, nil
 }
