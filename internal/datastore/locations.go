@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/codingchem/pokedexcli/internal/api"
 	"github.com/codingchem/pokedexcli/internal/pokecache"
@@ -18,14 +19,13 @@ type LocationArea struct {
 }
 
 type LocationStore struct {
-	prev   *string
-	oldmap *api.Map
-	cache  *pokecache.Cache
-	next   string
+	prev  *string
+	cache *pokecache.Cache
+	next  string
 }
 
 func (l *LocationStore) Next() ([]LocationArea, error) {
-	res, err := l.oldmap.NextLocations()
+	res, err := api.NextLocations(l.next)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,10 @@ func (l *LocationStore) Next() ([]LocationArea, error) {
 }
 
 func (l *LocationStore) Prev() ([]LocationArea, error) {
-	res, err := l.oldmap.PreviousLocations()
+	if l.prev == nil {
+		return nil, fmt.Errorf("Already on first page!")
+	}
+	res, err := api.NextLocations(*l.prev)
 	if err != nil {
 		return nil, err
 	}
@@ -56,9 +59,8 @@ func (l *LocationStore) Prev() ([]LocationArea, error) {
 
 func NewLocationStore() *LocationStore {
 	return &LocationStore{
-		next:   "",
-		prev:   nil,
-		oldmap: &api.Map{},
-		cache:  pokecache.NewCache(10),
+		next:  "",
+		prev:  nil,
+		cache: pokecache.NewCache(10),
 	}
 }

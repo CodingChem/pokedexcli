@@ -14,34 +14,18 @@ type ApiResponse struct {
 	Results  json.RawMessage `json:"results"`
 }
 
-type Map struct {
-	next     string
-	previous string
-}
-
-func (m *Map) NextLocations() (ApiResponse, error) {
-	if m.next == "" {
-		m.next = locationUrl
+func NextLocations(url string) (ApiResponse, error) {
+	if url == "" {
+		url = locationUrl
 	}
-	resData, err := m.callApi(m.next)
+	resData, err := callApi(url)
 	if err != nil {
 		return ApiResponse{}, err
 	}
 	return resData, nil
 }
 
-func (m *Map) PreviousLocations() (ApiResponse, error) {
-	if m.previous == "" {
-		return ApiResponse{}, fmt.Errorf("Navigation error: On first page!")
-	}
-	resData, err := m.callApi(m.previous)
-	if err != nil {
-		return ApiResponse{}, err
-	}
-	return resData, nil
-}
-
-func (m *Map) callApi(url string) (ApiResponse, error) {
+func callApi(url string) (ApiResponse, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return ApiResponse{}, err
@@ -54,11 +38,6 @@ func (m *Map) callApi(url string) (ApiResponse, error) {
 	dec := json.NewDecoder(res.Body)
 	var resData ApiResponse
 	dec.Decode(&resData)
-	m.next = resData.Next
-	if resData.Previous == nil {
-		m.previous = ""
-	} else {
-		m.previous = *(resData.Previous)
-	}
+
 	return resData, nil
 }
