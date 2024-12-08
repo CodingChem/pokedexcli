@@ -30,6 +30,7 @@ func NewCache(retainSeconds int) *Cache {
 func (c *Cache) Get(key string) (value []byte, success bool) {
 	c.mu.RLock()
 	entry, success := c.Calls[key]
+	c.mu.RUnlock()
 	if success {
 		return entry.val, success
 	}
