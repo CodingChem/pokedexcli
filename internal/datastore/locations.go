@@ -29,8 +29,7 @@ func (l *LocationStore) Next() ([]LocationArea, error) {
 	if err != nil {
 		return nil, err
 	}
-	var locs []LocationArea
-	err = json.Unmarshal(res.Results, &locs)
+	locs, err := l.unmarshal(res.Results)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +44,7 @@ func (l *LocationStore) Prev() ([]LocationArea, error) {
 	if err != nil {
 		return nil, err
 	}
-	var locs []LocationArea
-	err = json.Unmarshal(res.Results, &locs)
+	locs, err := l.unmarshal(res.Results)
 	if err != nil {
 		return nil, err
 	}
@@ -74,4 +72,13 @@ func (l *LocationStore) getData(url string) (api.ApiResponse, error) {
 	l.next = res.Next
 	l.prev = res.Previous
 	return res, nil
+}
+
+func (l *LocationStore) unmarshal(data []byte) ([]LocationArea, error) {
+	var locs []LocationArea
+	err := json.Unmarshal(data, &locs)
+	if err != nil {
+		return nil, err
+	}
+	return locs, nil
 }
