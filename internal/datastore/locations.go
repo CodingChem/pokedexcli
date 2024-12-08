@@ -60,9 +60,14 @@ func NewLocationStore() *LocationStore {
 }
 
 func (l *LocationStore) getData(url string) (api.ApiResponse, error) {
-	data, err := api.GetLocations(url)
-	if err != nil {
-		return api.ApiResponse{}, err
+	data, ok := l.cache.Get(url)
+	var err error
+	if !ok {
+		data, err = api.GetLocations(url)
+		if err != nil {
+			return api.ApiResponse{}, err
+		}
+		l.cache.Add(url, data)
 	}
 	var res api.ApiResponse
 	err = json.Unmarshal(data, &res)
