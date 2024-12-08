@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -14,30 +15,26 @@ type ApiResponse struct {
 	Results  json.RawMessage `json:"results"`
 }
 
-func NextLocations(url string) (ApiResponse, error) {
+func GetLocations(url string) ([]byte, error) {
 	if url == "" {
 		url = locationUrl
 	}
-	resData, err := callApi(url)
+	res, err := callApi(url)
 	if err != nil {
-		return ApiResponse{}, err
+		return nil, err
 	}
-	return resData, nil
+	return res, nil
 }
 
-func callApi(url string) (ApiResponse, error) {
+func callApi(url string) ([]byte, error) {
 	res, err := http.Get(url)
 	if err != nil {
-		return ApiResponse{}, err
+		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return ApiResponse{}, fmt.Errorf("Invalid error code: %d", res.StatusCode)
+		return nil, fmt.Errorf("Invalid error code: %d", res.StatusCode)
 	}
 
-	dec := json.NewDecoder(res.Body)
-	var resData ApiResponse
-	dec.Decode(&resData)
-
-	return resData, nil
+	return io.ReadAll(res.Body)
 }
