@@ -18,8 +18,12 @@ func Run() {
 			return
 		}
 		command := scanner.Text()
-		if err := CommandMap[command].callback(); err != nil {
-			fmt.Println(err.Error())
+		if cmd, exists := CommandMap[command]; exists {
+			if err := cmd.callback(); err != nil {
+				fmt.Println(err.Error())
+			}
+		} else {
+			fmt.Println("Invalid command:", command)
 		}
 	}
 }

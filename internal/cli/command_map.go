@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/codingchem/pokedexcli/internal/api"
+	"github.com/codingchem/pokedexcli/internal/datastore"
 )
 
 type cliCommand struct {
@@ -27,7 +27,7 @@ func commandExit() error {
 }
 
 func mapCommand() error {
-	curLocation, err := locations.NextLocations()
+	curLocation, err := locations.Next()
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func mapCommand() error {
 }
 
 func mapbCommand() error {
-	curLocation, err := locations.PreviousLocations()
+	curLocation, err := locations.Prev()
 	if err != nil {
 		return err
 	}
@@ -49,6 +49,7 @@ func mapbCommand() error {
 }
 
 func initCommands() {
+	locations = datastore.NewLocationStore()
 	CommandMap = map[string]cliCommand{
 		"help": {
 			name:        "help",
@@ -75,5 +76,5 @@ func initCommands() {
 
 var (
 	CommandMap map[string]cliCommand
-	locations  api.Map
+	locations  datastore.ILocationStore
 )
