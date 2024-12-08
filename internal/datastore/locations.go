@@ -20,7 +20,7 @@ type LocationArea struct {
 
 type LocationStore struct {
 	prev  *string
-	cache *pokecache.Cache
+	cache *pokecache.Cache[api.ApiResponse]
 	next  string
 }
 
@@ -61,6 +61,6 @@ func NewLocationStore() *LocationStore {
 	return &LocationStore{
 		next:  "",
 		prev:  nil,
-		cache: pokecache.NewCache(10),
+		cache: pokecache.NewCache[api.ApiResponse](10),
 	}
 }

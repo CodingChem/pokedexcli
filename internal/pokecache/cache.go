@@ -5,39 +5,39 @@ import (
 	"time"
 )
 
-type cacheEntry struct {
+type cacheEntry[T any] struct {
 	createdAt time.Time
-	val       []byte
+	val       T
 }
 
-type Cache struct {
-	Calls map[string]cacheEntry
+type Cache[T any] struct {
+	Calls map[string]cacheEntry[T]
 	mu    sync.RWMutex
 }
 
-func (c *Cache) Add(key string, value []byte) {
+func (c *Cache[T]) Add(key string, value T) {
 	c.mu.Lock()
-	c.Calls[key] = cacheEntry{time.Now(), value}
+	c.Calls[key] = cacheEntry[T]{time.Now(), value}
 	c.mu.Unlock()
 }
 
-func NewCache(retainSeconds int) *Cache {
-	c := Cache{}
+func NewCache[T any](retainSeconds int) *Cache[T] {
+	c := Cache[T]{}
 	go c.sweepLoop(retainSeconds)
 	return &c
 }
 
-func (c *Cache) Get(key string) (value []byte, success bool) {
+func (c *Cache[T]) Get(key string) (value T, success bool) {
 	c.mu.RLock()
 	entry, success := c.Calls[key]
 	c.mu.RUnlock()
 	if success {
 		return entry.val, success
 	}
-	return nil, success
+	return *new(T), success
 }
 
-func (c *Cache) sweepLoop(retainSeconds int) {
+func (c *Cache[T]) sweepLoop(retainSeconds int) {
 	ticker := time.NewTicker(time.Duration(retainSeconds) * time.Second)
 	for {
 		c.mu.Lock()
