@@ -64,9 +64,14 @@ func (l *LocationStore) Prev() ([]LocationArea, error) {
 }
 
 func (l *LocationStore) Get(area string) ([]Pokemon, error) {
-	data, err := api.GetLocation(area)
-	if err != nil {
-		return nil, err
+	var err error
+	data, success := l.cache.Get(area)
+	if !success {
+		data, err = api.GetLocation(area)
+		if err != nil {
+			return nil, err
+		}
+		l.cache.Add(area, data)
 	}
 	var res LAApiResponse
 	err = json.Unmarshal(data, &res)
