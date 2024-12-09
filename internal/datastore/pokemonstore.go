@@ -1,5 +1,9 @@
 package datastore
 
+import (
+	"github.com/codingchem/pokedexcli/internal/pokecache"
+)
+
 type IPokeStore interface {
 	Catch(pokemon string) (caught bool)
 }
@@ -29,4 +33,22 @@ type Pokemon struct {
 }
 type PokemonEncounter struct {
 	Pokemon Pokemon `json:"pokemon"`
+}
+
+type pokemonStore struct {
+	cache  *pokecache.Cache[[]byte]
+	caught []string
+}
+
+func NewPokemonStore() *pokemonStore {
+	store := pokemonStore{
+		caught: make([]string, 1),
+		cache:  pokecache.NewCache[[]byte](120),
+	}
+	return &store
+}
+
+func (ps *pokemonStore) Catch(pokemon string) (caught bool) {
+	// TODO: false
+	return false
 }
