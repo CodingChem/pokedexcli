@@ -55,9 +55,13 @@ func NewPokemonStore() *pokemonStore {
 }
 
 func (ps *pokemonStore) Catch(pokemon string) (caught bool, err error) {
-	data, err := api.GetPokemon(pokemon)
-	if err != nil {
-		return false, err
+	data, success := ps.cache.Get(pokemon)
+	if !success {
+		data, err = api.GetPokemon(pokemon)
+		if err != nil {
+			return false, err
+		}
+		ps.cache.Add(pokemon, data)
 	}
 	var my_pokemon Pokemon
 	err = json.Unmarshal(data, &my_pokemon)
