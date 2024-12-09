@@ -5,7 +5,7 @@ import (
 )
 
 type IPokeStore interface {
-	Catch(pokemon string) (caught bool)
+	Catch(pokemon string) (caught bool, err error)
 }
 
 type PokemonStats struct {
@@ -48,7 +48,7 @@ func NewPokemonStore() *pokemonStore {
 	return &store
 }
 
-func (ps *pokemonStore) Catch(pokemon string) (caught bool) {
+func (ps *pokemonStore) Catch(pokemon string) (caught bool, err error) {
 	// TODO: false
-	return false
+	return false, nil
 }
