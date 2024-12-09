@@ -27,7 +27,6 @@ func Run() {
 			if err := cmd.callback(arg); err != nil {
 				fmt.Println(err.Error())
 			}
-			fmt.Println(arg)
 		} else {
 			fmt.Println("Invalid command:", command)
 		}
