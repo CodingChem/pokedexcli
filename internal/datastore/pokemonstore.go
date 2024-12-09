@@ -93,8 +93,13 @@ func (ps *pokemonStore) Inspect(pokemon string) (err error) {
 		}
 		ps.cache.Add(pokemon, data)
 	}
-	// TODO: Print details!
-	fmt.Println("Pokemon details here!")
+	var my_pokemon Pokemon
+	err = json.Unmarshal(data, &my_pokemon)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Name: %v\nHeight: %v\nWeight: %v\n", my_pokemon.Name, my_pokemon.Height, my_pokemon.Weight)
+	// TODO: Print details of stats and types!
 	return nil
 }
 
