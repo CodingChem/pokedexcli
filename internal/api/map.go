@@ -10,6 +10,7 @@ import (
 const (
 	locationUrl     string = "https://pokeapi.co/api/v2/location/"
 	locationAreaUrl string = "https://pokeapi.co/api/v2/location-area/"
+	pokemonUrl      string = "https://pokeapi.co/api/v2/pokemon/"
 )
 
 type ApiResponse struct {
@@ -23,6 +24,14 @@ func GetLocations(url string) ([]byte, error) {
 		url = locationAreaUrl
 	}
 	res, err := callApi(url)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func GetPokemon(pokemon string) ([]byte, error) {
+	res, err := callApi(pokemonUrl + pokemon)
 	if err != nil {
 		return nil, err
 	}

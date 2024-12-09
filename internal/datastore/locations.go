@@ -19,13 +19,6 @@ type LocationArea struct {
 	Id   int    `json:"id"`
 }
 
-type Pokemon struct {
-	Name string `json:"name"`
-}
-type PokemonEncounter struct {
-	Pokemon Pokemon `json:"pokemon"`
-}
-
 type LAApiResponse struct {
 	Encounter []PokemonEncounter `json:"pokemon_encounters"`
 }
