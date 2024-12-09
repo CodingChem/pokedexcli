@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 
 type IPokeStore interface {
 	Catch(pokemon string) (caught bool, err error)
+	Inspect(pokemon string) error
 }
 
 type PokemonStats struct {
@@ -77,4 +79,35 @@ func (ps *pokemonStore) Catch(pokemon string) (caught bool, err error) {
 	}
 
 	return false, nil
+}
+
+func (ps *pokemonStore) Inspect(pokemon string) (err error) {
+	if !ps.isCaught(pokemon) {
+		return fmt.Errorf("you have not caught that pokemon")
+	}
+	data, success := ps.cache.Get(pokemon)
+	if !success {
+		data, err = api.GetLocation(pokemon)
+		if err != nil {
+			return err
+		}
+		ps.cache.Add(pokemon, data)
+	}
+	var my_pokemon Pokemon
+	err = json.Unmarshal(data, &my_pokemon)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Name: %v\nHeight: %v\nWeight: %v\n", my_pokemon.Name, my_pokemon.Height, my_pokemon.Weight)
+	// TODO: Print details of stats and types!
+	return nil
+}
+
+func (ps *pokemonStore) isCaught(pokemon string) (caught bool) {
+	for _, poke := range ps.caught {
+		if pokemon == poke {
+			return true
+		}
+	}
+	return false
 }

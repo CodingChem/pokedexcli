@@ -74,6 +74,11 @@ func catchCommand(pokemon string) error {
 	return nil
 }
 
+func inspectCommand(pokemon string) error {
+	err := pokemons.Inspect(pokemon)
+	return err
+}
+
 func initCommands() {
 	locations = datastore.NewLocationStore()
 	pokemons = datastore.NewPokemonStore()
@@ -107,6 +112,11 @@ func initCommands() {
 			name:        "catch",
 			description: "Attempt to catch a pokemon!",
 			callback:    catchCommand,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspects a pokemons details. Pokemon must first be caught",
+			callback:    inspectCommand,
 		},
 	}
 }
