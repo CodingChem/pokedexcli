@@ -79,6 +79,18 @@ func inspectCommand(pokemon string) error {
 	return err
 }
 
+func pokedexCommand(_ string) error {
+	caughtPokemons := pokemons.GetCaught()
+	if len(caughtPokemons) < 1 {
+		return fmt.Errorf("No caught pokemons")
+	}
+	fmt.Println("Your pokedex:")
+	for _, pokemon := range caughtPokemons {
+		fmt.Printf(" - %v\n", pokemon)
+	}
+	return nil
+}
+
 func initCommands() {
 	locations = datastore.NewLocationStore()
 	pokemons = datastore.NewPokemonStore()
@@ -117,6 +129,11 @@ func initCommands() {
 			name:        "inspect",
 			description: "Inspects a pokemons details. Pokemon must first be caught",
 			callback:    inspectCommand,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "List your current pokedex",
+			callback:    pokedexCommand,
 		},
 	}
 }
