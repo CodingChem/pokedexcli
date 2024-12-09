@@ -20,7 +20,7 @@ type ApiResponse struct {
 
 func GetLocations(url string) ([]byte, error) {
 	if url == "" {
-		url = locationUrl
+		url = locationAreaUrl
 	}
 	res, err := callApi(url)
 	if err != nil {
