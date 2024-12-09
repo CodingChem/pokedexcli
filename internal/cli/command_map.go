@@ -13,7 +13,7 @@ type cliCommand struct {
 	description string
 }
 
-func commandHelp(arg string) error {
+func commandHelp(_ string) error {
 	fmt.Println("Welcome to the pokedex\n\nUsage:")
 	for _, cmd := range CommandMap {
 		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
@@ -21,12 +21,12 @@ func commandHelp(arg string) error {
 	return nil
 }
 
-func commandExit(arg string) error {
+func commandExit(_ string) error {
 	os.Exit(0)
 	return nil
 }
 
-func mapCommand(arg string) error {
+func mapCommand(_ string) error {
 	curLocation, err := locations.Next()
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func mapCommand(arg string) error {
 	return nil
 }
 
-func mapbCommand(arg string) error {
+func mapbCommand(_ string) error {
 	curLocation, err := locations.Prev()
 	if err != nil {
 		return err
