@@ -13,6 +13,7 @@ import (
 type IPokeStore interface {
 	Catch(pokemon string) (caught bool, err error)
 	Inspect(pokemon string) error
+	GetCaught() []string
 }
 
 type PokemonStats struct {
@@ -50,7 +51,7 @@ type pokemonStore struct {
 
 func NewPokemonStore() *pokemonStore {
 	store := pokemonStore{
-		caught: make([]string, 1),
+		caught: make([]string, 0),
 		cache:  pokecache.NewCache[[]byte](120),
 	}
 	return &store
@@ -110,4 +111,8 @@ func (ps *pokemonStore) isCaught(pokemon string) (caught bool) {
 		}
 	}
 	return false
+}
+
+func (ps *pokemonStore) GetCaught() []string {
+	return ps.caught
 }
