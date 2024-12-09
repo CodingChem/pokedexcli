@@ -36,14 +36,14 @@ func Run() {
 func parseInput(input string) (command string, arg string, err error) {
 	splitInput := strings.Split(input, " ")
 	argLen := len(splitInput)
-	switch {
-	case argLen == 0:
+	switch argLen {
+	case 0:
 		return "", "", fmt.Errorf("Error: no input to parse?")
-	case argLen == 1:
+	case 1:
 		command = splitInput[0]
 		arg = ""
 		err = nil
-	case argLen == 2:
+	default:
 		command = splitInput[0]
 		arg = strings.Join(splitInput[1:], "")
 		err = nil
