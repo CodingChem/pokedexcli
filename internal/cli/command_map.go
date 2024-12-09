@@ -59,8 +59,24 @@ func exploreCommand(location string) error {
 	return nil
 }
 
+func catchCommand(pokemon string) error {
+	fmt.Printf("Throwing a Pokeball at %v...\n", pokemon)
+	caught, err := pokemons.Catch(pokemon)
+	if err != nil {
+		return err
+	}
+	switch caught {
+	case true:
+		fmt.Printf("%v was caught!\n", pokemon)
+	case false:
+		fmt.Printf("%v escaped!\n", pokemon)
+	}
+	return nil
+}
+
 func initCommands() {
 	locations = datastore.NewLocationStore()
+	pokemons = datastore.NewPokemonStore()
 	CommandMap = map[string]cliCommand{
 		"help": {
 			name:        "help",
@@ -87,10 +103,16 @@ func initCommands() {
 			description: "Explore the pokemon in the location area",
 			callback:    exploreCommand,
 		},
+		"catch": {
+			name:        "catch",
+			description: "Attempt to catch a pokemon!",
+			callback:    catchCommand,
+		},
 	}
 }
 
 var (
 	CommandMap map[string]cliCommand
 	locations  datastore.ILocationStore
+	pokemons   datastore.IPokeStore
 )
