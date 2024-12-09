@@ -8,12 +8,12 @@ import (
 )
 
 type cliCommand struct {
-	callback    func() error
+	callback    func(string) error
 	name        string
 	description string
 }
 
-func commandHelp() error {
+func commandHelp(arg string) error {
 	fmt.Println("Welcome to the pokedex\n\nUsage:")
 	for _, cmd := range CommandMap {
 		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
@@ -21,12 +21,12 @@ func commandHelp() error {
 	return nil
 }
 
-func commandExit() error {
+func commandExit(arg string) error {
 	os.Exit(0)
 	return nil
 }
 
-func mapCommand() error {
+func mapCommand(arg string) error {
 	curLocation, err := locations.Next()
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func mapCommand() error {
 	return nil
 }
 
-func mapbCommand() error {
+func mapbCommand(arg string) error {
 	curLocation, err := locations.Prev()
 	if err != nil {
 		return err
@@ -48,8 +48,8 @@ func mapbCommand() error {
 	return nil
 }
 
-func exploreCommand() error {
-	pokemons, err := locations.Get("1")
+func exploreCommand(location string) error {
+	pokemons, err := locations.Get(location)
 	if err != nil {
 		return err
 	}
