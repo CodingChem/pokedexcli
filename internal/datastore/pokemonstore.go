@@ -1,6 +1,11 @@
 package datastore
 
 import (
+	"encoding/json"
+	"math/rand"
+	"time"
+
+	"github.com/codingchem/pokedexcli/internal/api"
 	"github.com/codingchem/pokedexcli/internal/pokecache"
 )
 
@@ -24,12 +29,13 @@ type PokemonTypes struct {
 }
 
 type Pokemon struct {
-	Name       string              `json:"name"`
-	Types      PokemonTypesDetails `json:"types"`
-	Stats      PokemonStats        `json:"stats"`
-	Height     int                 `json:"height"`
-	Weight     int                 `json:"weight"`
-	Experience int                 `json:"base_experience"`
+	Name string `json:"name"`
+	// TODO: fix stats and types
+	// Types PokemonTypesDetails `json:"types"`
+	// Stats      PokemonStats        `json:"stats"`
+	Height     int `json:"height"`
+	Weight     int `json:"weight"`
+	Experience int `json:"base_experience"`
 }
 type PokemonEncounter struct {
 	Pokemon Pokemon `json:"pokemon"`
@@ -49,6 +55,22 @@ func NewPokemonStore() *pokemonStore {
 }
 
 func (ps *pokemonStore) Catch(pokemon string) (caught bool, err error) {
-	// TODO: false
+	data, err := api.GetPokemon(pokemon)
+	if err != nil {
+		return false, err
+	}
+	var my_pokemon Pokemon
+	err = json.Unmarshal(data, &my_pokemon)
+	if err != nil {
+		return false, err
+	}
+	// TODO: calculate based on base xp
+	dc := 10
+	dice := rand.New(rand.NewSource(time.Now().UnixNano()))
+	if dice.Intn(20) > dc {
+		ps.caught = append(ps.caught, pokemon)
+		return true, nil
+	}
+
 	return false, nil
 }
