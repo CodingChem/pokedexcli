@@ -8,12 +8,12 @@ import (
 )
 
 type cliCommand struct {
-	callback    func() error
+	callback    func(string) error
 	name        string
 	description string
 }
 
-func commandHelp() error {
+func commandHelp(arg string) error {
 	fmt.Println("Welcome to the pokedex\n\nUsage:")
 	for _, cmd := range CommandMap {
 		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
@@ -21,12 +21,12 @@ func commandHelp() error {
 	return nil
 }
 
-func commandExit() error {
+func commandExit(arg string) error {
 	os.Exit(0)
 	return nil
 }
 
-func mapCommand() error {
+func mapCommand(arg string) error {
 	curLocation, err := locations.Next()
 	if err != nil {
 		return err
@@ -37,13 +37,24 @@ func mapCommand() error {
 	return nil
 }
 
-func mapbCommand() error {
+func mapbCommand(arg string) error {
 	curLocation, err := locations.Prev()
 	if err != nil {
 		return err
 	}
 	for _, loc := range curLocation {
 		fmt.Printf("%v\n", loc.Name)
+	}
+	return nil
+}
+
+func exploreCommand(location string) error {
+	pokemons, err := locations.Get(location)
+	if err != nil {
+		return err
+	}
+	for _, p := range pokemons {
+		fmt.Printf("%v\n", p.Name)
 	}
 	return nil
 }
@@ -70,6 +81,11 @@ func initCommands() {
 			name:        "mapb",
 			description: "Previous locations",
 			callback:    mapbCommand,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explore the pokemon in the location area",
+			callback:    exploreCommand,
 		},
 	}
 }

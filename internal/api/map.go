@@ -7,7 +7,10 @@ import (
 	"net/http"
 )
 
-const locationUrl string = "https://pokeapi.co/api/v2/location/"
+const (
+	locationUrl     string = "https://pokeapi.co/api/v2/location/"
+	locationAreaUrl string = "https://pokeapi.co/api/v2/location-area/"
+)
 
 type ApiResponse struct {
 	Previous *string         `json:"previous"`
@@ -17,8 +20,17 @@ type ApiResponse struct {
 
 func GetLocations(url string) ([]byte, error) {
 	if url == "" {
-		url = locationUrl
+		url = locationAreaUrl
 	}
+	res, err := callApi(url)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func GetLocation(name string) ([]byte, error) {
+	url := locationAreaUrl + name
 	res, err := callApi(url)
 	if err != nil {
 		return nil, err
