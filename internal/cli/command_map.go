@@ -48,6 +48,17 @@ func mapbCommand() error {
 	return nil
 }
 
+func exploreCommand() error {
+	pokemons, err := locations.Get("1")
+	if err != nil {
+		return err
+	}
+	for _, p := range pokemons {
+		fmt.Printf("%v\n", p.Name)
+	}
+	return nil
+}
+
 func initCommands() {
 	locations = datastore.NewLocationStore()
 	CommandMap = map[string]cliCommand{
@@ -70,6 +81,11 @@ func initCommands() {
 			name:        "mapb",
 			description: "Previous locations",
 			callback:    mapbCommand,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explore the pokemon in the location area",
+			callback:    exploreCommand,
 		},
 	}
 }

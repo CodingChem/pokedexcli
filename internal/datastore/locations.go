@@ -11,11 +11,23 @@ import (
 type ILocationStore interface {
 	Next() ([]LocationArea, error)
 	Prev() ([]LocationArea, error)
+	Get(area string) ([]Pokemon, error)
 }
 
 type LocationArea struct {
 	Name string `json:"name"`
 	Id   int    `json:"id"`
+}
+
+type Pokemon struct {
+	Name string `json:"name"`
+}
+type PokemonEncounter struct {
+	Pokemon Pokemon `json:"pokemon"`
+}
+
+type LAApiResponse struct {
+	Encounter []PokemonEncounter `json:"pokemon_encounters"`
 }
 
 type LocationStore struct {
@@ -49,6 +61,23 @@ func (l *LocationStore) Prev() ([]LocationArea, error) {
 		return nil, err
 	}
 	return locs, nil
+}
+
+func (l *LocationStore) Get(area string) ([]Pokemon, error) {
+	data, err := api.GetLocation(area)
+	if err != nil {
+		return nil, err
+	}
+	var res LAApiResponse
+	err = json.Unmarshal(data, &res)
+	if err != nil {
+		return nil, err
+	}
+	var pokemons []Pokemon
+	for _, enc := range res.Encounter {
+		pokemons = append(pokemons, enc.Pokemon)
+	}
+	return pokemons, nil
 }
 
 func NewLocationStore() *LocationStore {
